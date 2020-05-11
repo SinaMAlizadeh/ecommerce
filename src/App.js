@@ -12,6 +12,7 @@ import { selectCurrentUser } from "./redux/user/user.selectors";
 import { createStructuredSelector } from "reselect";
 import { setCurrentUser } from "./redux/user/user.action";
 
+
 class App extends Component {
   unsubscribeFromAuth = null;
 
