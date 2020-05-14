@@ -10,7 +10,7 @@ const config = {
   storageBucket: "crwn-db-566f4.appspot.com",
   messagingSenderId: "1054077261589",
   appId: "1:1054077261589:web:090d8223e8a9e73c8ffb1c",
-  measurementId: "G-G191YZH8SS"
+  measurementId: "G-G191YZH8SS",
 };
 
 export const createUserProfileDocument = async (userAuth, additionalData) => {
@@ -29,16 +29,46 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
         displayName,
         email,
         createdAt,
-        ...additionalData
+        ...additionalData,
       });
-    } catch (error){
-      console.log('error creatinguser' , error.message);
+    } catch (error) {
+      console.log("error creatinguser", error.message);
     }
   }
   return userRef;
 };
 
 firebase.initializeApp(config);
+
+export const addCollectionsAndDocuments = async (
+  collectioKey,
+  objectsToAdd
+) => {
+  const collectionRef = firestore.collection(collectioKey);
+  console.log(collectionRef);
+  const batch = firestore.batch();
+  objectsToAdd.forEach((obj) => {
+    const newDocRef = collectionRef.doc();
+    batch.set(newDocRef, obj);
+  });
+  return await batch.commit();
+};
+
+export const convertCollectionsSnapshotToMap = collectionsSnapshot => {
+  const transaformCollection = collectionsSnapshot.docs.map(docSnapShot => {
+    const { title, items } = docSnapShot.data();
+    return {
+      routeName: encodeURI(title.toLowerCase()),
+      id: docSnapShot.id,
+      title,
+      items,
+    };
+  });
+  return transaformCollection.reduce((accumulator, collection) => {
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator;
+  }, {});
+};
 
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
