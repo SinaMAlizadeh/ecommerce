@@ -13,7 +13,6 @@ const CollectionPage = ({collection}) => {
         {items.map(item => <CollectionItems key={item.id} item={item} />)}
       </div>
     </div>
- 
   );
 };
 
